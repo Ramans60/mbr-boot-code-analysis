@@ -5,6 +5,8 @@ A Practical Study of Reading and Analyzing the MBR Boot Code from a USB Drive Us
 - [Introduction](#introduction)
 - [Requirements](#objective)
 - [Introduction to Disk and MBR](#introduction-to-disk-and-mbr)
+- [Why MBR Exists](#why-mbr-exists)
+- [Why MBR is 512 Bytes](why-mbr-is-512-bytes)
 - [Functions of MBR](#functions-of-mbr)
 - [Structure of MBR](#structure-of-mbr)
 - [Practical Experiment](#practical-experiment)
@@ -50,23 +52,12 @@ A disk is a permanent storage device used to store data even after the power is 
 <img width="1117" height="598" alt="Screenshot from 2025-12-31 16-21-02" src="https://github.com/user-attachments/assets/62acc15a-75c4-4ce4-abf3-09c2ddf669e9" />
 
 
-### Why MBR Exists
-- System Startup Sequence
-- Power ON
-- BIOS executes
+## Why MBR Exists
 
-*  BIOS needs to determine:
-- Where the operating system is located
-- Which partition should be booted
+- MBR exists to provide initial boot information to the system firmware.
+- It identifies the bootable partition and describes how the disk is partitioned.
+- MBR is accessed before any filesystem is loaded.
 
-* Key Points
-- BIOS does not understand filesystems
-- BIOS understands only raw disk sectors
-
-* BIOS requests:
-> “Read the first sector of the disk”
-
-> The first sector read by BIOS is the MBR.
 
 ### Functions of MBR
 * MBR performs two primary functions:
@@ -86,7 +77,7 @@ A disk is a permanent storage device used to store data even after the power is 
 
 ### MBR Location
 - [ Sector 0 ]  → MBR (512 bytes)
--[ Sector 1 ]
+- [ Sector 1 ]
 - [ Sector 2 ]
 - [   ...    ]
 
@@ -101,74 +92,15 @@ A disk is a permanent storage device used to store data even after the power is 
 >(UEFI and GPT are outside the scope of this document)
 
 ## Why MBR is 512 Bytes
-* MBR occupies exactly one disk sector
-* Traditional disk sector size is 512 bytes
-* MBR resides in Sector 0
-* Disk Design Constraints
-* Smallest readable unit: one sector
 
-> Fixed sector size: 512 bytes
-
-- BIOS Constraints
-* BIOS can read only full sectors
-* BIOS cannot read partial sectors
-* BIOS cannot interpret filesystems
-
-### Therefore, BIOS reads:
-> Sector 0 → 512 bytes → MBR
-- Power-On Limitations
-- At startup:
-- No operating system
-- No drivers
-- Very limited memory
-- Minimal execution environment
-# BIOS behavior:
-# Read the first sector and execute it.
-
-## Implications
-* MBR must fit entirely within 512 bytes
-* No additional space is available
-*  Components That Must Fit
-* Boot code
-* Partition table
-* Boot signature
-* Historical Context
-* Storage capacity was limited
-* RAM was minimal
-* CPUs were slow
-* 512 bytes provided:
-* Fast access
-* Simplicity
-* Hardware compatibility
-* Once standardized, this size remained unchanged for backward compatibility.
+- MBR occupies exactly one disk sector.
+- Traditional disk sector size is 512 bytes.
+- At startup, BIOS reads only the first sector of the disk.
+> Therefore, the entire MBR must fit within 512 bytes.
 
 ## Structure of MBR
 
--The 512-byte MBR is divided as follows:
-* Offset Range	Component	Size
-* 0 – 445	Boot Code	446 bytes
-* 446 – 509	Partition Table	64 bytes
-* 510 – 511	Boot Signature	2 bytes
-* Boot Code (446 bytes)
-* Small machine-level program
-* Executed directly by BIOS
-* Identifies the active partition
-* Loads the partition bootloader
-* Due to size constraints, it cannot load the operating system directly.
-* Partition Table (64 bytes)
-* Defines disk partitioning
-* Contains four partition entries
-* Each entry is 16 bytes
-* Supports a maximum of four primary partitions
-* Each entry stores:
-* Boot flag
-* Starting sector
-* Partition size
-* Partition type
-* Boot Signature (2 bytes)
-* Fixed value: 55 AA
-* Indicates a valid boot sector to BIOS
-> If the signature is missing, BIOS ignores the disk.
+<img width="1536" height="1024" alt="ChatGPT Image Jan 2, 2026, 11_39_45 AM" src="https://github.com/user-attachments/assets/26120541-c056-4899-9e49-89f30aeaf505" />
 
 ## Practical Experiment
 
@@ -214,12 +146,6 @@ A disk is a permanent storage device used to store data even after the power is 
 
 ## Conclusion
 > The Master Boot Record is raw, disk-level code that forms the bridge between system firmware and the operating system. Proper understanding of MBR requires analyzing disk data at the sector level, rather than at the filesystem level.
-
-
-
-
-
-
 
 
 
