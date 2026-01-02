@@ -1,12 +1,13 @@
-## mbr-boot-code-analysis
-A Practical Study of Reading and Analyzing the MBR Boot Code from a USB Drive Using Linux
+# mbr-boot-code-analysis
+ A Practical Study of Reading and Analyzing the MBR Boot Code from a USB Drive Using Linux
+
 ## Table of Contents
 - [Objective](#objective)
 - [Introduction](#introduction)
-- [Requirements](#objective)
+- [Requirements](#requirements)
 - [Introduction to Disk and MBR](#introduction-to-disk-and-mbr)
 - [Why MBR Exists](#why-mbr-exists)
-- [Why MBR is 512 Bytes](why-mbr-is-512-bytes)
+- [Why MBR is 512 Bytes](#why-mbr-is-512-bytes)
 - [Functions of MBR](#functions-of-mbr)
 - [Structure of MBR](#structure-of-mbr)
 - [Practical Experiment](#practical-experiment)
@@ -59,16 +60,16 @@ A disk is a permanent storage device used to store data even after the power is 
 - MBR is accessed before any filesystem is loaded.
 
 
-### Functions of MBR
-* MBR performs two primary functions:
-* Boot decision
-* Identifies the bootable partition
-* Locates the partition bootloader
-* Disk layout information
-* Describes how the disk is partitioned
-=> Important Notes
+## Functions of MBR
+- MBR performs two primary functions:
+  - Boot decision
+    - Identifies the bootable partition
+    - Locates the partition bootloader
+  - Disk layout information
+    - Describes how the disk is partitioned
 
-### MBR is not:
+
+#### MBR is not:
 - a filesystem
 - a partition
 - an operating system
@@ -76,16 +77,16 @@ A disk is a permanent storage device used to store data even after the power is 
 > MBR exists before all higher-level disk structures.
 
 ### MBR Location
-- [ Sector 0 ]  → MBR (512 bytes)
-- [ Sector 1 ]
-- [ Sector 2 ]
-- [   ...    ]
+- Sector 0 → MBR (512 bytes)
+- Sector 1
+- Sector 2
+- ...
 
 ### MBR can exist even if:
 - The disk is empty
 - The disk has no filesystem
-- Legacy BIOS Boot Behavior
-### In BIOS-based systems:
+
+=> In BIOS-based systems:
 - Boot always starts from MBR
 - Absence of MBR results in boot failure
 
@@ -106,7 +107,7 @@ A disk is a permanent storage device used to store data even after the power is 
 
 ### Step 1: Identify the USB Drive
 ```bash
-   lsblk
+lsblk
 
 ```
 <img width="1920" height="1080" alt="Screenshot from 2026-01-01 17-57-44" src="https://github.com/user-attachments/assets/debb4fae-590a-4383-af9d-345eb31ba0d9" />
@@ -114,7 +115,7 @@ A disk is a permanent storage device used to store data even after the power is 
 ### Step 2: Read the First 512 Bytes (MBR)
 
 ```bash
-   sudo dd if=/dev/sdb bs=512 count=1 | hexdump -C
+sudo dd if=/dev/sdb bs=512 count=1 | hexdump -C
 
 ```
 
@@ -130,13 +131,9 @@ A disk is a permanent storage device used to store data even after the power is 
 
 ### Step 3: Verify the Boot Signature
 * The final two bytes of the output should be:
-" 55 aa "
+- `55 aa`
 
-### Step 4: Interpretation if Signature is Missing
-* Condition	Interpretation
-* 55 aa absent	Disk does not use MBR
-* Random data	Disk may be GPT or partially wiped
-* All zeros	Disk is empty or uninitialized
+> If the last two bytes are `55 aa`, the disk uses a valid MBR.
 
 ## Observations
 * Disk sector size is 512 bytes
