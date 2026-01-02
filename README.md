@@ -1,4 +1,4 @@
-# mbr-boot-code-analysis
+# MBR BOOT CODE ANALYSIS
  A Practical Study of Reading and Analyzing the MBR Boot Code from a USB Drive Using Linux
 
 ## Table of Contents
